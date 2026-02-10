@@ -1,0 +1,43 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "actionGroups_ActionGroup_SendEmail_name": {
+            "defaultValue": "ActionGroup-SendEmail",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/actionGroups",
+            "apiVersion": "2024-10-01-preview",
+            "name": "[parameters('actionGroups_ActionGroup_SendEmail_name')]",
+            "location": "Global",
+            "tags": {
+                "Delete": "SaveCosts"
+            },
+            "properties": {
+                "groupShortName": "SendEmail",
+                "enabled": true,
+                "emailReceivers": [
+                    {
+                        "name": "SendMeAnEmail_-EmailAction-",
+                        "emailAddress": "jonathan.banda@za.logicalis.com",
+                        "useCommonAlertSchema": false
+                    }
+                ],
+                "smsReceivers": [],
+                "webhookReceivers": [],
+                "eventHubReceivers": [],
+                "itsmReceivers": [],
+                "azureAppPushReceivers": [],
+                "automationRunbookReceivers": [],
+                "voiceReceivers": [],
+                "logicAppReceivers": [],
+                "azureFunctionReceivers": [],
+                "armRoleReceivers": []
+            }
+        }
+    ]
+}
