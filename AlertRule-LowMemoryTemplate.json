@@ -1,0 +1,64 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "metricAlerts_LowMemoryUtilisation_name": {
+            "defaultValue": "LowMemoryUtilisation",
+            "type": "String"
+        },
+        "workspaces_Monitor_LogAnaWorkspace_externalid": {
+            "defaultValue": "/subscriptions/c8992b61-099b-4b88-84e6-c2a223bb24a1/resourceGroups/RG-Monitoring/providers/Microsoft.OperationalInsights/workspaces/Monitor-LogAnaWorkspace",
+            "type": "String"
+        },
+        "actionGroups_ActionGroup_SendEmail_externalid": {
+            "defaultValue": "/subscriptions/C8992B61-099B-4B88-84E6-C2A223BB24A1/resourceGroups/RG-Monitoring/providers/microsoft.insights/actionGroups/ActionGroup-SendEmail",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/metricAlerts",
+            "apiVersion": "2018-03-01",
+            "name": "[parameters('metricAlerts_LowMemoryUtilisation_name')]",
+            "location": "global",
+            "tags": {
+                "Delete": "SaveCosts"
+            },
+            "properties": {
+                "description": "Letting you know that 10% memory is being used",
+                "severity": 3,
+                "enabled": true,
+                "scopes": [
+                    "[parameters('workspaces_Monitor_LogAnaWorkspace_externalid')]"
+                ],
+                "evaluationFrequency": "PT1M",
+                "windowSize": "PT5M",
+                "criteria": {
+                    "allOf": [
+                        {
+                            "threshold": 10,
+                            "name": "Metric1",
+                            "metricNamespace": "Microsoft.OperationalInsights/workspaces",
+                            "metricName": "Average_% Used Memory",
+                            "operator": "GreaterThan",
+                            "timeAggregation": "Average",
+                            "skipMetricValidation": false,
+                            "criterionType": "StaticThresholdCriterion"
+                        }
+                    ],
+                    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+                },
+                "autoMitigate": true,
+                "targetResourceType": "Microsoft.OperationalInsights/workspaces",
+                "targetResourceRegion": "southafricanorth",
+                "actions": [
+                    {
+                        "actionGroupId": "[parameters('actionGroups_ActionGroup_SendEmail_externalid')]",
+                        "webHookProperties": {}
+                    }
+                ]
+            }
+        }
+    ]
+}
